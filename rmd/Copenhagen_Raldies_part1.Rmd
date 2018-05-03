@@ -1,0 +1,288 @@
+---
+Author: Ciera Martinez
+output:
+  html_document:
+    keep_md: yes
+---
+
+# Momocs: Using R to analyze shape
+
+We will go through the Momocs package. This is one of my favorite R packages and I have used it extensively to analyze leaf shape when I was a PhD student at Davis. For example in [Martinez et al., 2015](https://www.sciencedirect.com/science/article/pii/S0012160616303062). My collegue at the time, Dan Chitwood introduced me to the package where he used it to create some stunning work analyzing modulations in shape in [Grape Leaves](http://www.plantphysiol.org/content/164/1/259.long) and [violins](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0109229)!
+
+The package has changed a bit since I last visited. It appears as though [Vincent Bonhomme](http://www.vincentbonhomme.fr/) has really embraced  Tidyverse and has updated the `Momocs` package to reflect this. AND it appears that he is busily working on the Momocs 2.0 release (so stay tuned!). 
+
+# Getting enviroment ready
+
+```{r warnings=FALSE, message=FALSE}
+library(Momocs)
+library(tidyverse)
+```
+
+## Examining Objects
+
+The Momocs package come with some great example datasets that we can use for examples, so we will just use these to make things easier.
+
+### First: Coo Objects
+
+A shape is described in euclidian space and the  Shapes can be organized into a collection of coordinates. 
+
+a Coo object that carries:
+
+A component named `$coo`, a list of shapes (as matrix.ces); most of the time, a component named $fac, a data.frame to store covariates, either factors or numerics;possibly, other components of interest.
+
+```{r}
+## Check out one of the data sets:
+shapes
+str(shapes)
+
+## Check out the coordinates of a single shape.
+shapes[18] %>% head() 
+```
+
+# Visualizations
+
+Since we are literally exploring shape, visualization of our data is extremely important. Momocs comes with a few different ways to visualize.
+
+```{r}
+panel(shapes, names = TRUE) ## base R
+
+cat <- shapes[4]
+coo_plot(cat)
+
+## #Rcatladies
+coo_plot(cat, col="purple", main="Meow") 
+```
+
+## More detail into the data structure of Momocs
+
+As discussed previously, a dataset (group of shapes) in Momocs is described as a Coo.  Once you apply a method to that you get a Coe. 
+
+Coo	+	Morphometric method	=	Coe
+(x; y) coordinates +	appropriate method	=	quantitative variables
+
+**Break for Discussion on S3 objects**
+
+- [ ]  How many of you are coming from Python?  Or use Python?
+- [ ]  How many of you use S3 and know what it is in R?
+- [ ]  How is S3 different from classes in Python?
+- [ ]  What about S4 and S5 then?!
+
+** What is the difference between S3 and 4?**
+- S3 can only dispatch on it's first argument, whereas S4 can dispatch on multiple arguments. If you want to be able to write methods for function foo that should do different things if given an object of class "bar" or given objects of class "bar" and "foobar", or given objects of class "barfoo" and "foobar", then S4 provides a far better way to handle such complexities. [(ref)](https://stackoverflow.com/questions/6450803/class-in-r-s3-vs-s4)
+
+More on S3: 
+* Read [Advanced R The S3 object system Chapter](http://adv-r.had.co.nz/S3.html)
+
+So, let's delve a bit more into our data.
+
+```{r}
+class(shapes)
+```
+
+Does that make sense? 
+
+Another example of a more popular class - the tibble
+```{r}
+class(iris) 
+iris_tibble <- as_data_frame(iris)
+
+## Tibbles have 3 classes
+class(iris_tibble)
+```
+
+Now back to Momocs....
+
+```{r}
+## Let's check out the Cat Shape
+cat <- shapes[4]
+class(cat) # just a matrix
+coo_plot(cat)
+
+## Play with plot attributes
+coo_plot(cat, col="pink", main="Meow")
+
+## More attributes
+?coo_plot
+
+## Meeeeeow
+coo_plot(coo_sample(cat, 125), points=TRUE, pch=20, main="125-pts Meow")
+coo_plot(coo_sample(cat, 100), points=TRUE, pch=20, main="100-pts Meow")
+coo_plot(coo_sample(cat, 75), points=TRUE, pch=20, main="75-pts Meow")
+coo_plot(coo_sample(cat, 50), points=TRUE, pch=20, main="50-pts Meow")
+coo_plot(coo_sample(cat, 25), points=TRUE, pch=20, main="50-pts Meow")
+coo_plot(coo_sample(cat, 5), points=TRUE, pch=20, main="50-pts Meow")
+```
+
+## More Functions useful for visualizing
+
+`coo_smooth()`: Smoothes coordinates using a simple moving average. May be useful to remove digitization noise, mainly on outlines and open outlines.
+
+```{r}
+cat %>% coo_smooth(1) %>% coo_sample(120) %>% coo_plot()
+```
+
+# Morphometrics: Comparing across samples
+
+**Morphometrics**: refers to the quantitative analysis of form, a concept that encompasses size and shape. Morphometric analyses are commonly performed on organisms, and are useful in analyzing their fossil record, the impact of mutations on shape, developmental changes in form, covariances between ecological factors and shape, as well for estimating quantitative-genetic parameters of shape [ref wikipedia](https://en.wikipedia.org/wiki/Morphometrics).
+
+In morphometric analysis it is important to find the center so that you can compare across samples. This is important so that the program knows how to align.
+
+```{r}
+coo_plot(coo_center(cat), main="centered Meow")
+```
+
+The exciting aspect of momocs is that you can analyze and compare a bunch of shapes!
+
+```{r}
+## let's start using another dataset - bot
+bot
+```
+
+The bot dataset is composed of 40 bottles of whiskey and beer.  
+
+```{r}
+## Let's check them all out
+panel(bot, fac="type", names=TRUE)
+
+## Individual bottle
+head(bot[2])
+
+## - [ ] try other bottles.
+coo_plot(coo_center(bot[5]), main="centered bottle")
+```
+
+Now let's look at all of them.
+
+```{r}
+## Stack
+stack(bot)
+
+## Stack and visualize
+## - [ ] Take away other functions to see what they do.
+
+bot %>% 
+  coo_center() %>% 
+  coo_alignxax() %>%
+  coo_scale %>%
+  coo_slidedirection("up") %T>% 
+  print() %>% 
+  stack()
+```
+
+**Break for Discussion on Pipes**
+
+- [ ] How many of you all use pipes in R?
+- [ ] What are the benefits of using pipes?
+- [ ] What make pipes hard to use?
+- [ ] Who uses the more complex pipes `%T>%`?
+
+**Note**: We used the T pipe `%T>%`.  
+
+The “tee” operator, %T>% works like %>%, except it returns the left-hand side value, and not the result of the right-hand side operation. This is useful when a step in a pipeline is used for its side-effect (printing, plotting, logging, etc.).
+
+```{r}
+## Tee operator example
+rnorm(200) %>%
+matrix(ncol = 2) %T>%
+plot %>% # plot usually does not return anything. 
+colSums
+```
+
+## Elliptical fourier analysis
+
+- [ ] Head back to power point for a sec.
+
+Now that we have a very basic understanding of Elliptical Fourier analysis, let's get our hands dirty exploring the datasets. 
+
+```{r}
+coo_oscillo(bot[1], "efourier")
+```
+
+*Remember*: 
+
+A dataset (group of shapes) in Momocs is described as a Coo.  Once you apply a method to that you get a Coe. 
+
+Coo	+	Morphometric method	=	Coe
+(x; y) coordinates +	appropriate method	=	quantitative variables
+
+
+```{r}
+## actual efourier transformation
+bot.f <- efourier(bot)
+
+## Now we have a Coe object
+bot.f
+class(bot.f)
+
+# mean shape, per group
+bot.ms <- mshapes(bot.f, 1)
+beer   <- bot.ms$shp$beer    %T>% coo_plot(border="blue")
+whisky <- bot.ms$shp$whisky  %T>% coo_draw(border="red")
+legend("bottomright", lwd=4,
+       col=c("blue", "red"), legend=c("beer", "whisky"))
+```
+
+## PCA
+
+**Break for Discussion on PCA**
+
+Principle Component Analysis (PCA): A way to break down the variance between samples. Its operation can be thought of as revealing the internal structure of the data in a way that best explains the variance in the data.
+
+- [ ] How many people use PCA regularly?
+- [ ] What kinds of questions can you ask with PCA?
+- [ ] How is PCA different from clustering? 
+
+* We will go into a bit more detail on how PCA and clustering are related in next half of tutorial.
+
+Now back to Momocs...
+
+Let's perform PCA on our Elliptical Fourier bottles
+```{r}
+bot.p <- PCA(bot.f)
+class(bot.p)        # a PCA object, let's plot it
+plot(bot.p)
+
+```
+
+```{r}
+## Visualize
+bot %>% efourier(norm=TRUE) %>% PCA() %>% plot("type")
+
+bot.p %>% as_df() %>% ggplot() +
+  aes(x=PC1, y=PC2, col=type) + coord_equal() + 
+  geom_point() + geom_density2d() + theme_light()
+```
+
+You can also get the mean and standard deviation of shapes 
+
+```{r}
+# mean shape
+bot.f %>% mshapes() %>% coo_plot(main = "mean shape")
+```
+
+You can even get the standard deviation of shapes, but you have to use another package, so I won't go into too much detail here. 
+
+## Kmeans clustering on shapes
+
+What sort of questions do we ask of these objects?
+
+```{r}
+## This is k-means implements in Momocs
+KMEANS(bot.p, centers = 5)
+```
+
+There is a lot of other things you can do with this package: 
+```{r}
+apropos("coo_")
+```
+
+Over 95 different functions acting on Coo objects!  I hope that you explore more on your own time and find a nice data set to explore. This tutorial was largely based off [this tutorial](https://vbonhomme.github.io/Momocs/vignettes/Momocs_speed_dating.html), which goes into a lot more detail about the package. It also explain how to input your own data!  Basically what you need is binary jpeg images, then they can be imported. So keep an eye out for cool datasets where you can employ this package!  I am working on illustrations of [butterflies and cattipilars](https://www.biodiversitylibrary.org/item/113922#page/161/mode/1up) at the moment!
+
+
+## References:
+
+Other package that allows more explicit view of shapes
+
+[shapes](https://cran.r-project.org/web/packages/shapes/index.html)
+
+
