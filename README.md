@@ -1,12 +1,38 @@
 <div style="text-align:center"><img src ="https://github.com/iamciera/SOMexample/blob/gh-pages/html/example.jpg?raw=true" width="25%" height="25%"/></div>
 
-# Self Organizing Maps (SOM): Example using RNAseq reads
+# From scientist to data scientist + Level-up your clustering with shape analysis
 
 *Written by: Ciera Martinez*
 
-Tutorial is for learning about how to run clustering analysis using Self Organizing Maps using the kohonen package in R.
+## Summary
 
-[part 1](html/SOM_RNAseq_tutorial_part1_clean.html): Cleaning EdgeR output for SOM analysis.
+1. From scientist to data scientist (My path to data science: A love story)
+
+2. Two part tutorial:
+    - The data science of shape using `Momocs`
+    - How to fully explore your clustering results using `ggplot` and `kohonen` 
+
+## Requirements
+You will need: Rstudio installed. 
+
+Additional packages we will be using: `tidyverse`, `ggplot2`, `kohonen`, `momocs`, `factoextra`, `naniar`, `RCurl`, `cowplot`, `cowplot`.
+
+You can install them all with this code:
+
+```
+install.packages("kohonen")
+install.packages("factoextra")
+install.package("naniar")
+install.packages("RCurl")
+install.packages("cowplot")
+install.packages("tidyverse")
+install.packages("kohonen")
+install.packages("cowplot")
+```
+
+## Links to website display
+
+[part 1](Copenhagen_Raldies_part1.html): The data science of shape using `Momocs`
 
 [part 2](html/SOM_RNAseq_tutorial_part2a_SOM.html): Running PCA and SOM
 
@@ -14,7 +40,7 @@ Tutorial is for learning about how to run clustering analysis using Self Organiz
 Running Code
 -------------
 
-To run examples, please download all files from [Github Repository page](https://github.com/iamciera/SOMexample) and keep files in the same folders they were downloaded in. Open .Rmd files in Rstudio and set working directory to directory in which code was opened in `.r`. (Session > Set Working Directory > To Source File Location)
+To run examples, please download all files from [Github Repository page](https://github.com/iamciera/rladies_copenhagen) and keep files in the same folders they were downloaded in. Open .Rmd files in Rstudio and set working directory to directory in which code was opened in `.r`. (Session > Set Working Directory > To Source File Location)
 
 **New to Github?**: There is a green button that says "clone or download", there is a "download" zip file option here.
 
