@@ -4,6 +4,8 @@
 
 *Written by: Ciera Martinez*
 
+WEBSITE: https://iamciera.github.io/rladies_copenhagen/
+
 ## Links to tutorials
 
 [Tutorial 1: The data science of shape using `Momocs`](html/Copenhagen_Raldies_part1.html)
