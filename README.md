@@ -4,13 +4,11 @@
 
 *Written by: Ciera Martinez*
 
-## Summary
+## Links to tutorials
 
-1. From scientist to data scientist (My path to data science: A love story)
+[Tutorial 1: The data science of shape using `Momocs`](html/Copenhagen_Raldies_part1.html)
 
-2. Two part tutorial:
-    - The data science of shape using `Momocs`
-    - How to fully explore your clustering results using `ggplot` and `kohonen` 
+[Tutorial 2: How to fully explore your clustering results using `ggplot` and `kohonen` ](html/Copenhagen_Raldies_part2.html)
 
 ## Requirements
 You will need: Rstudio installed. 
@@ -29,12 +27,6 @@ install.packages("tidyverse")
 install.packages("kohonen")
 install.packages("cowplot")
 ```
-
-## Links to website display
-
-[part 1](Copenhagen_Raldies_part1.html): The data science of shape using `Momocs`
-
-[part 2](html/SOM_RNAseq_tutorial_part2a_SOM.html): Running PCA and SOM
 
 
 Running Code
